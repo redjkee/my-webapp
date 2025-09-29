@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мое Веб-Приложение</title>
+    <title>Мое Веб-Приложение с Логами</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Мое Веб-Приложение</h1>
-        <p>Нажми на кнопки чтобы увидеть результат</p>
+        <h1>🚀 Мое Веб-Приложение</h1>
+        <p>Нажми на кнопки чтобы увидеть результат и проверить логи</p>
         
         <div class="buttons">
             <button id="btn1" class="button">Кнопка 1</button>
@@ -17,6 +17,14 @@
         </div>
         
         <div id="result" class="result"></div>
+
+        <div class="monitoring">
+            <h3>📊 Мониторинг</h3>
+            <p><a href="/api/logs" target="_blank">📈 Посмотреть логи всех запросов</a></p>
+            <p><a href="/api/health" target="_blank">❤️ Проверить статус сервера</a></p>
+            <button id="refreshLogs" class="button-small">🔄 Обновить логи</button>
+            <div id="logsPreview" class="logs-preview"></div>
+        </div>
     </div>
 
     <script src="script.js"></script>

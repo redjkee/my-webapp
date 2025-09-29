@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Храним последние логи в памяти
+let requestLogs = [];
+
 // Middleware
 app.use(express.static('public'));
 app.use(express.json());
@@ -16,30 +19,58 @@ app.use((req, res, next) => {
 
 // Логируем ВСЕ запросы
 app.use((req, res, next) => {
-    console.log('📨 Получен запрос:', req.method, req.url, new Date().toISOString());
+    const log = {
+        method: req.method,
+        url: req.url,
+        timestamp: new Date().toISOString(),
+        ip: req.ip || req.connection.remoteAddress,
+        userAgent: req.get('User-Agent') || 'Unknown'
+    };
+    
+    requestLogs.unshift(log); // Добавляем в начало
+    requestLogs = requestLogs.slice(0, 50); // Храним только последние 50
+    
+    console.log(`📨 ${log.method} ${log.url} - ${log.timestamp}`);
     next();
 });
 
-// API endpoints
+// API endpoints с улучшенным логированием
 app.post('/api/button1', (req, res) => {
-    console.log('🔵 Кнопка 1 нажата!');
-    console.log('Headers:', req.headers);
-    console.log('Body:', req.body);
+    const logMessage = `🔵 КНОПКА 1 НАЖАТА - ${new Date().toISOString()}`;
+    console.log('🎯 ' + logMessage);
+    console.log('📍 IP:', req.ip);
+    console.log('📱 User Agent:', req.get('User-Agent'));
+    
     res.json({ 
-        message: 'Кнопка 1 работает на Render!',
+        message: 'Кнопка 1 работает на Render! 🚀',
         timestamp: new Date().toISOString(),
-        status: 'success'
+        status: 'success',
+        serverLog: logMessage,
+        requestId: Date.now()
     });
 });
 
 app.post('/api/button2', (req, res) => {
-    console.log('🔴 Кнопка 2 нажата!');
-    console.log('Headers:', req.headers);
-    console.log('Body:', req.body);
+    const logMessage = `🔴 КНОПКА 2 НАЖАТА - ${new Date().toISOString()}`;
+    console.log('🎯 ' + logMessage);
+    console.log('📍 IP:', req.ip);
+    console.log('📱 User Agent:', req.get('User-Agent'));
+    
     res.json({ 
-        message: 'Кнопка 2 работает на Render!',
+        message: 'Кнопка 2 работает на Render! 🎉',
         timestamp: new Date().toISOString(),
-        status: 'success'
+        status: 'success', 
+        serverLog: logMessage,
+        requestId: Date.now()
+    });
+});
+
+// Endpoint для просмотра логов через браузер
+app.get('/api/logs', (req, res) => {
+    res.json({
+        serverTime: new Date().toISOString(),
+        totalRequests: requestLogs.length,
+        logs: requestLogs
     });
 });
 
@@ -49,7 +80,8 @@ app.get('/api/health', (req, res) => {
     res.json({ 
         status: 'OK', 
         version: '1.0.0',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        requestCount: requestLogs.length
     });
 });
 
@@ -68,4 +100,5 @@ app.listen(PORT, () => {
     console.log(`🚀 Сервер запущен на порту ${PORT}`);
     console.log(`⏰ Время запуска: ${new Date().toISOString()}`);
     console.log(`🌐 Доступен по: https://my-webapp-plg5.onrender.com`);
+    console.log(`📊 Логи доступны по: https://my-webapp-plg5.onrender.com/api/logs`);
 });
