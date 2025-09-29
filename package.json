@@ -1,16 +1,12 @@
 {
   "name": "my-webapp",
-  "version": "1.0.0",
-  "description": "Web app with buttons",
-  "main": "clean-server.js",
+  "version": "1.0.0", 
+  "main": "server.js",
   "scripts": {
-    "start": "node clean-server.js",
-    "dev": "nodemon clean-server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "express": "^4.18.2"
-  },
-  "engines": {
-    "node": ">=18.0.0"
   }
 }
